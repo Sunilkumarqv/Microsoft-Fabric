@@ -1,0 +1,37 @@
+.create table turbine_vibration (
+	timestamp: datetime,
+	turbine_id: string,
+	vibration_rms: real,
+	vibration_peak: real,
+	vibration_freq: real
+)
+
+.create table turbine_vibration ingestion json mapping "vibration_mapping"
+
+'['
+
+'{"column": "timestamp", "path": "$.ts", "datatype": "datetime"},'
+'{"column": "turbine_id", "path": "$.id", "datatype": "string"},'
+'{"column": "vibration_rms", "path": "$.rms", "datatype": "real"},'
+'{"column": "vibration_peak", "path": "$.peak", "datatype": "real"},'
+'{"column": "vibration_freq", "path": "$.freq", "datatype": "real"}' 
+
+']'
+
+
+
+.create table RawEvents ingestion json mapping 'RawEventMapping' 
+  ```
+  [ 
+	{"column":"timestamp","Properties":{"path":"$.timestamp"}},
+	{"column":"deviceId","Properties":{"path":"$.deviceId"}},
+	{"column":"messageId","Properties":{"path":"$.messageId"}},
+	{"column":"temperature","Properties":{"path":"$.temperature"}},
+	{"column":"humidity","Properties":{"path":"$.humidity"}}
+  ]
+  ```
+
+  let threshold_rms = 5.0;
+turbine_vibration
+| where vibration_rms > threshold_rms
+| project timestamp, turbine_id, vibration_rms, vibration_peak, vibration_freq
