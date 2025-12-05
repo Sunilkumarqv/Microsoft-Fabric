@@ -31,7 +31,7 @@
   ]
   ```
 
-  let threshold_rms = 5.0;
-turbine_vibration
-| where vibration_rms > threshold_rms
-| project timestamp, turbine_id, vibration_rms, vibration_peak, vibration_freq
+   let threshold_rms = 5.0;
+stream_data
+| where rms > threshold_rms
+| project ts, id, rms, peak, freq
